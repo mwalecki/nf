@@ -6,8 +6,7 @@ extern "C" {
 #endif
 
 #include <inttypes.h>			    
-#include "nfv2_config.h"
-#include "mycrc.h"
+#include "../nfv2_config.h"
 
 /*
 * Command codes
@@ -610,12 +609,22 @@ typedef struct{
 	uint8_t error					:1;
 } NF_STRUCT_ComBuf;
 
-
-
 uint8_t NF_Interpreter(NF_STRUCT_ComBuf *NFComBuf, uint8_t *rxBuf, uint8_t *rxPt, uint8_t *commandArray, uint8_t *commandCnt);
 uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf, uint8_t *txBuf, const uint8_t *commandArray, uint8_t commandCnt, uint8_t addr);
 void NF_ComBufReset(NF_STRUCT_ComBuf *NFComBuf);
 void NFv2_Config(NF_STRUCT_ComBuf *NFComBuf, uint8_t myAddress);
+void NFv2_Config2(NF_STRUCT_ComBuf *NFComBuf, uint8_t myAddress, uint8_t slaveAddress);
+
+
+// ########	CRC Calculation
+
+#define POLYNOMIAL 0xD8  /* 11011 followed by 0's */
+#define WIDTH  (8 * sizeof(uint8_t))
+#define TOPBIT (1 << (WIDTH - 1))
+
+void NFv2_CrcInit(void);
+uint8_t NFv2_CrcFast(const uint8_t message[], uint8_t nBytes);
+
 
 #ifdef __cplusplus
 }

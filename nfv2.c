@@ -1,5 +1,7 @@
 #include "nfv2.h"
 
+uint8_t crcTable[256];
+
 /*
 * Funkcja do wrzucenia w obsluge przychodzacych danych.
 * NFComBuf - wskaznik do bufora komunikacyjnego, w ktorym automatycznie beda umieszczane odebrane dane.
@@ -35,7 +37,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 	else if((*rxPt) > 3 && (*rxPt) >= n){
 		(*rxPt) = 0;
 		// if CRC Fail
-		if(crcFast(((const uint8_t*)rxBuf) + 3,  n-3) != rxBuf[n]){
+		if(NFv2_CrcFast(((const uint8_t*)rxBuf) + 3,  n-3) != rxBuf[n]){
 			return 0;
 		}
 		// if Address Fail && not a Broadcast
@@ -1996,7 +1998,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 			}
 		commandIter++;
 	}
-	txBuf[txBufIter] = crcFast(((const uint8_t*)txBuf) + 3,  txBufIter-3);
+	txBuf[txBufIter] = NFv2_CrcFast(((const uint8_t*)txBuf) + 3,  txBufIter-3);
 	txBuf[1] = txBufIter;
 	txBuf[2] = ~txBufIter;
 
@@ -2244,3 +2246,67 @@ void NF_ComBufReset(NF_STRUCT_ComBuf *NFComBuf){
 	#endif
 }
 
+void NFv2_CrcInit(void)
+{
+    uint8_t  remainder;
+	uint8_t b; //bit
+	uint16_t dividend;
+
+    /*
+     * Compute the remainder of each possible dividend.
+     */
+    for (dividend = 0; dividend < 256; ++dividend)
+    {
+        /*
+         * Start with the dividend followed by zeros.
+         */
+        remainder = dividend << (WIDTH - 8);
+
+        /*
+         * Perform modulo-2 division, a bit at a time.
+         */
+        for (b = 8; b > 0; --b)
+        {
+            /*
+             * Try to divide the current data bit.
+             */
+            if (remainder & TOPBIT)
+            {
+                remainder = (remainder << 1) ^ POLYNOMIAL;
+            }
+            else
+            {
+                remainder = (remainder << 1);
+            }
+        }
+
+        /*
+         * Store the result into the table.
+         */
+        crcTable[dividend] = remainder;
+    }
+
+}   /* crcInit() */
+
+uint8_t NFv2_CrcFast(const uint8_t message[], uint8_t nBytes)
+{
+    uint8_t mydata;
+    uint8_t byte;
+    uint8_t remainder = 0;
+
+
+    /*
+     * Divide the message by the polynomial, a byte at a time.
+     */
+    for (byte = 0; byte < nBytes; ++byte)
+    {
+        mydata = message[byte] ^ (remainder >> (WIDTH - 8));
+        remainder = crcTable[mydata] ^ (remainder << 8);
+    }
+
+    /*
+     * The final remainder is the CRC.
+     */
+    return (remainder);
+
+}   /* crcFast() */
