@@ -684,6 +684,36 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 			}
 			else
 		#endif
+		// ####		Read Speed
+		#ifdef NF_BUFSZ_ReadDrivesSpeed
+			if(rxBuf[rxBufIter] == NF_COMMAND_ReadDrivesSpeed){
+				rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_ReadDrivesSpeed;
+				// Master wants to acquire data from me (slave)
+				if((rxParamsCnt == 0) && (rxAddress == NFComBuf->myAddress)){
+					commandArray[*commandCnt] = NF_COMMAND_ReadDrivesSpeed;
+					(*commandCnt) ++;
+				}
+				// Slave returns data that I (master) asked for
+				else if(rxParamsCnt > 0){
+					combufDataIter = 0;
+					rxDataIter = 0;
+					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDrivesSpeed)) {
+						if(NFComBuf->ReadDrivesSpeed.addr[combufDataIter] == rxAddress) {
+							u8TempPt = (uint8_t*) &(NFComBuf->ReadDrivesSpeed.data[combufDataIter]);
+							dataBytesIter = 0;
+							while(dataBytesIter < NF_DATABYTES_ReadDrivesSpeed){
+								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDrivesSpeed + dataBytesIter);
+								dataBytesIter++;
+							}
+							//NFComBuf->ReadDrivesSpeed.data[combufDataIter] = ((NF_STRUCT_ReadDrivesSpeed*)dataPt)->data[rxDataIter];
+							rxDataIter++;
+						}
+						combufDataIter++;
+					}
+				}
+			}
+			else
+		#endif
 		// ####		Read Position
 		#ifdef NF_BUFSZ_ReadDrivesPosition
 			if(rxBuf[rxBufIter] == NF_COMMAND_ReadDrivesPosition){
@@ -1798,6 +1828,37 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 			}
 			else
 		#endif
+		// ####		Read Speed
+		#ifdef NF_BUFSZ_ReadDrivesSpeed
+			if(commandArray[commandIter] == NF_COMMAND_ReadDrivesSpeed){
+				// I (slave) return data that master asked for
+				if(txAddress == NFComBuf->myAddress){
+					combufDataIter = 0;
+					txDataIter = 0;
+					while(combufDataIter < NF_BUFSZ_ReadDrivesSpeed) {
+						u8TempPt = (uint8_t*) &(NFComBuf->ReadDrivesSpeed.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_ReadDrivesSpeed){
+							*(dataPt + txDataIter*NF_DATABYTES_ReadDrivesSpeed + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						txDataIter++;
+						combufDataIter++;
+					}
+					txBuf[txBufIter] = NF_COMMAND_ReadDrivesSpeed;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_ReadDrivesSpeed;
+					txBufIter += txBuf[txBufIter+1]+2;
+				}
+				// I (master) want to acquire data from slave
+				else{
+					txBuf[txBufIter] = NF_COMMAND_ReadDrivesSpeed;
+					txBuf[txBufIter+1] = 0;
+					txBufIter += 2;
+
+				}
+			}
+			else
+		#endif
 		// ####		Read Status
 		#ifdef NF_BUFSZ_ReadDrivesStatus
 			if(commandArray[commandIter] == NF_COMMAND_ReadDrivesStatus){
@@ -2093,6 +2154,13 @@ void NF_ComBufReset(NF_STRUCT_ComBuf *NFComBuf){
 		for(combufDataIter=0; combufDataIter<NF_BUFSZ_ReadDrivesCurrent; combufDataIter++){
 			NFComBuf->ReadDrivesCurrent.addr[combufDataIter] = NF_BroadcastAddress;
 			NFComBuf->ReadDrivesCurrent.data[combufDataIter] = 0;
+		}
+	#endif
+	// ####		Read Speed
+	#ifdef NF_BUFSZ_ReadDrivesSpeed
+		for(combufDataIter=0; combufDataIter<NF_BUFSZ_ReadDrivesSpeed; combufDataIter++){
+			NFComBuf->ReadDrivesSpeed.addr[combufDataIter] = NF_BroadcastAddress;
+			NFComBuf->ReadDrivesSpeed.data[combufDataIter] = 0;
 		}
 	#endif
 	// ####		Read Position

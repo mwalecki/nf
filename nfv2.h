@@ -26,6 +26,7 @@ extern "C" {
 
 #define NF_COMMAND_ReadDrivesPosition	0x1A
 #define NF_COMMAND_ReadDrivesCurrent	0x1B
+#define NF_COMMAND_ReadDrivesSpeed		0x1C
 #define NF_COMMAND_SetDrivesMisc		0x1E
 #define NF_COMMAND_ReadDrivesStatus		0x1F
 
@@ -191,6 +192,15 @@ typedef struct{
 	uint8_t addr[NF_BUFSZ_ReadDrivesCurrent];
 	uint8_t updated;
 } NF_STRUCT_ReadDrivesCurrent;
+#endif
+// ####		Read Speed
+#ifdef NF_BUFSZ_ReadDrivesSpeed
+typedef struct{
+	#define NF_DATABYTES_ReadDrivesSpeed	2
+	int16_t data[NF_BUFSZ_ReadDrivesSpeed];
+	uint8_t addr[NF_BUFSZ_ReadDrivesSpeed];
+	uint8_t updated;
+} NF_STRUCT_ReadDrivesSpeed;
 #endif
 // ####		Set Misc
 #ifdef NF_BUFSZ_SetDrivesMisc
@@ -494,6 +504,10 @@ typedef struct{
 	// ####		Read Current
 	#ifdef NF_BUFSZ_ReadDrivesCurrent
 		NF_STRUCT_ReadDrivesCurrent	ReadDrivesCurrent;
+	#endif
+	// ####		Read Speed
+	#ifdef NF_BUFSZ_ReadDrivesSpeed
+		NF_STRUCT_ReadDrivesSpeed	ReadDrivesSpeed;
 	#endif
 	// ####		Set Misc
 	#ifdef NF_BUFSZ_SetDrivesMisc
