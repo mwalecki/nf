@@ -106,8 +106,8 @@ typedef struct{
 // ####		Set Speed
 #ifdef NF_BUFSZ_SetDrivesSpeed
 typedef struct{
-	#define NF_DATABYTES_SetDrivesSpeed		2
-	int16_t data[NF_BUFSZ_SetDrivesSpeed];
+	#define NF_DATABYTES_SetDrivesSpeed		4
+	int32_t data[NF_BUFSZ_SetDrivesSpeed];
 	uint8_t addr[NF_BUFSZ_SetDrivesSpeed];
 	uint8_t updated;
 } NF_STRUCT_SetDrivesSpeed;
