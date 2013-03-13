@@ -387,6 +387,7 @@ typedef struct{
 	#define NF_DATABYTES_ReadDigitalInputs	1
 	int16_t data[NF_BUFSZ_ReadDigitalInputs];
 	uint8_t addr[NF_BUFSZ_ReadDigitalInputs];
+	uint8_t updated;
 } NF_STRUCT_ReadDigitalInputs;
 #endif
 // ####		Set Outputs

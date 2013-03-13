@@ -680,6 +680,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadDrivesCurrent.updated = 1;
 				}
 			}
 			else
@@ -710,6 +711,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadDrivesSpeed.updated = 1;
 				}
 			}
 			else
@@ -740,6 +742,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadDrivesPosition.updated = 1;
 				}
 			}
 			else
@@ -770,6 +773,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadDrivesStatus.updated = 1;
 				}
 			}
 			else
@@ -802,6 +806,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadServosCurrent.updated = 1;
 				}
 			}
 			else
@@ -832,6 +837,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadServosPosition.updated = 1;
 				}
 			}
 			else
@@ -862,6 +868,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadServosStatus.updated = 1;
 				}
 			}
 			else
@@ -894,6 +901,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadDigitalInputs.updated = 1;
 				}
 			}
 			else
@@ -926,6 +934,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadAnalogInputs.updated = 1;
 				}
 			}
 			else
@@ -958,6 +967,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadDistance.updated = 1;
 				}
 			}
 			else
@@ -990,6 +1000,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadDeviceStatus.updated = 1;
 				}
 			}
 			else
@@ -1020,6 +1031,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 						}
 						combufDataIter++;
 					}
+					NFComBuf->ReadDeviceVitals.updated = 1;
 				}
 			}
 			else
@@ -1978,6 +1990,39 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				// I (master) want to acquire data from slave
 				else{
 					txBuf[txBufIter] = NF_COMMAND_ReadServosStatus;
+					txBuf[txBufIter+1] = 0;	
+					txBufIter += 2;
+					
+				}
+			}
+			else
+		#endif
+
+		// ########	Digital IO
+		// ####		Read Inputs
+		#ifdef NF_BUFSZ_ReadDigitalInputs
+			if(commandArray[commandIter] == NF_COMMAND_ReadDigitalInputs){
+				// I (slave) return data that master asked for
+				if(txAddress == NFComBuf->myAddress){					
+					combufDataIter = 0;
+					txDataIter = 0;
+					while(combufDataIter < NF_BUFSZ_ReadDigitalInputs) {
+						u8TempPt = (uint8_t*) &(NFComBuf->ReadDigitalInputs.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_ReadDigitalInputs){
+							*(dataPt + txDataIter*NF_DATABYTES_ReadDigitalInputs + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						txDataIter++;						
+						combufDataIter++;
+					}
+					txBuf[txBufIter] = NF_COMMAND_ReadDigitalInputs;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_ReadDigitalInputs;	
+					txBufIter += txBuf[txBufIter+1]+2;			
+				}
+				// I (master) want to acquire data from slave
+				else{
+					txBuf[txBufIter] = NF_COMMAND_ReadDigitalInputs;
 					txBuf[txBufIter+1] = 0;	
 					txBufIter += 2;
 					
