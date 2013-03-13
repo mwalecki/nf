@@ -1986,6 +1986,39 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 			else
 		#endif
 
+		// ########	Digital IO
+		// ####		Read Inputs
+		#ifdef NF_BUFSZ_ReadDigitalInputs
+			if(commandArray[commandIter] == NF_COMMAND_ReadDigitalInputs){
+				// I (slave) return data that master asked for
+				if(txAddress == NFComBuf->myAddress){					
+					combufDataIter = 0;
+					txDataIter = 0;
+					while(combufDataIter < NF_BUFSZ_ReadDigitalInputs) {
+						u8TempPt = (uint8_t*) &(NFComBuf->ReadDigitalInputs.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_ReadDigitalInputs){
+							*(dataPt + txDataIter*NF_DATABYTES_ReadDigitalInputs + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						txDataIter++;						
+						combufDataIter++;
+					}
+					txBuf[txBufIter] = NF_COMMAND_ReadDigitalInputs;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_ReadDigitalInputs;	
+					txBufIter += txBuf[txBufIter+1]+2;			
+				}
+				// I (master) want to acquire data from slave
+				else{
+					txBuf[txBufIter] = NF_COMMAND_ReadDigitalInputs;
+					txBuf[txBufIter+1] = 0;	
+					txBufIter += 2;
+					
+				}
+			}
+			else
+		#endif
+
 		// ########	Analog IO
 		// ####		Read Inputs
 		#ifdef NF_BUFSZ_ReadAnalogInputs
