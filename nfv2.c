@@ -270,6 +270,52 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 			}
 			else
 		#endif
+		// ####		Set Max Acceleration
+		#ifdef NF_BUFSZ_SetDrivesMaxAcceleration
+			if(rxBuf[rxBufIter] == NF_COMMAND_SetDrivesMaxAcceleration){
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
+					combufDataIter = 0;
+					rxDataIter = 0;
+					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesMaxAcceleration;
+					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesMaxAcceleration)) {
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesMaxAcceleration.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesMaxAcceleration){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesMaxAcceleration + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetDrivesMaxAcceleration.data[combufDataIter] = ((NF_STRUCT_SetDrivesMaxAcceleration*)dataPt)->data[rxDataIter];
+						combufDataIter++;
+						rxDataIter++;
+					}
+					NFComBuf->SetDrivesMaxAcceleration.updated = 1;
+				}
+			}
+			else
+		#endif
+		// ####		Set Motion Duration
+		#ifdef NF_BUFSZ_SetDrivesMotionDuration
+			if(rxBuf[rxBufIter] == NF_COMMAND_SetDrivesMotionDuration){
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
+					combufDataIter = 0;
+					rxDataIter = 0;
+					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesMotionDuration;
+					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesMotionDuration)) {
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesMotionDuration.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesMotionDuration){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesMotionDuration + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetDrivesMotionDuration.data[combufDataIter] = ((NF_STRUCT_SetDrivesMotionDuration*)dataPt)->data[rxDataIter];
+						combufDataIter++;
+						rxDataIter++;
+					}
+					NFComBuf->SetDrivesMotionDuration.updated = 1;
+				}
+			}
+			else
+		#endif
 		// ####		Set Misc
 		#ifdef NF_BUFSZ_SetDrivesMisc
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetDrivesMisc){				
@@ -1308,6 +1354,58 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 			}
 			else
 		#endif
+		// ####		Set Max Acceleration
+		#ifdef NF_BUFSZ_SetDrivesMaxAcceleration
+			if(commandArray[commandIter] == NF_COMMAND_SetDrivesMaxAcceleration){
+				combufDataIter = 0;
+				txDataIter = 0;
+				while(combufDataIter < NF_BUFSZ_SetDrivesMaxAcceleration) {
+					if(NFComBuf->SetDrivesMaxAcceleration.addr[combufDataIter] == txAddress) {
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesMaxAcceleration.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesMaxAcceleration){
+							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesMaxAcceleration + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetDrivesPosition*)dataPt)->data[txDataIter] = NFComBuf->SetDrivesPosition.data[combufDataIter];
+						txDataIter++;
+					}
+					combufDataIter++;
+				}
+				if(txDataIter > 0){
+					txBuf[txBufIter] = NF_COMMAND_SetDrivesMaxAcceleration;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_SetDrivesMaxAcceleration;
+					txBufIter += txBuf[txBufIter+1]+2;
+				}
+			}
+			else
+		#endif
+		// ####		Set Motion Duration
+		#ifdef NF_BUFSZ_SetDrivesMotionDuration
+			if(commandArray[commandIter] == NF_COMMAND_SetDrivesMotionDuration){
+				combufDataIter = 0;
+				txDataIter = 0;
+				while(combufDataIter < NF_BUFSZ_SetDrivesMotionDuration) {
+					if(NFComBuf->SetDrivesMotionDuration.addr[combufDataIter] == txAddress) {
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesMotionDuration.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesMotionDuration){
+							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesMotionDuration + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetDrivesPosition*)dataPt)->data[txDataIter] = NFComBuf->SetDrivesPosition.data[combufDataIter];
+						txDataIter++;
+					}
+					combufDataIter++;
+				}
+				if(txDataIter > 0){
+					txBuf[txBufIter] = NF_COMMAND_SetDrivesMotionDuration;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_SetDrivesMotionDuration;
+					txBufIter += txBuf[txBufIter+1]+2;
+				}
+			}
+			else
+		#endif
 		// ####		Set Misc
 		#ifdef NF_BUFSZ_SetDrivesMisc
 			if(commandArray[commandIter] == NF_COMMAND_SetDrivesMisc){
@@ -2192,6 +2290,20 @@ void NF_ComBufReset(NF_STRUCT_ComBuf *NFComBuf){
 		for(combufDataIter=0; combufDataIter<NF_BUFSZ_SetDrivesMaxPosition; combufDataIter++){
 			NFComBuf->SetDrivesMaxPosition.addr[combufDataIter] = NF_BroadcastAddress;
 			NFComBuf->SetDrivesMaxPosition.data[combufDataIter] = 0;
+		}
+	#endif
+	// ####		Set MaxAcceleration
+	#ifdef NF_BUFSZ_SetDrivesMaxAcceleration
+		for(combufDataIter=0; combufDataIter<NF_BUFSZ_SetDrivesMaxAcceleration; combufDataIter++){
+			NFComBuf->SetDrivesMaxAcceleration.addr[combufDataIter] = NF_BroadcastAddress;
+			NFComBuf->SetDrivesMaxAcceleration.data[combufDataIter] = 0;
+		}
+	#endif
+	// ####		Set Motion Duration
+	#ifdef NF_BUFSZ_SetDrivesMotionDuration
+		for(combufDataIter=0; combufDataIter<NF_BUFSZ_SetDrivesMotionDuration; combufDataIter++){
+			NFComBuf->SetDrivesMotionDuration.addr[combufDataIter] = NF_BroadcastAddress;
+			NFComBuf->SetDrivesMotionDuration.data[combufDataIter] = 0;
 		}
 	#endif
 	// ####		Read Current

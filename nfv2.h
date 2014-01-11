@@ -14,15 +14,17 @@ extern "C" {
 #define NF_COMMAND_ReadDeviceStatus		0x02
 #define NF_COMMAND_ReadDeviceVitals		0x03
 
-#define NF_COMMAND_SetDrivesMode		0x10
-#define NF_COMMAND_SetDrivesSpeed		0x11
-#define NF_COMMAND_SetDrivesCurrent		0x12
-#define NF_COMMAND_SetDrivesPosition	0x13
-#define NF_COMMAND_SetDrivesPWM			0x14
-#define NF_COMMAND_SetDrivesMaxCurrent	0x15
-#define NF_COMMAND_SetDrivesMaxSpeed	0x16
-#define NF_COMMAND_SetDrivesMinPosition	0x17
-#define NF_COMMAND_SetDrivesMaxPosition	0x18
+#define NF_COMMAND_SetDrivesMode			0x10
+#define NF_COMMAND_SetDrivesSpeed			0x11
+#define NF_COMMAND_SetDrivesCurrent			0x12
+#define NF_COMMAND_SetDrivesPosition		0x13
+#define NF_COMMAND_SetDrivesPWM				0x14
+#define NF_COMMAND_SetDrivesMaxCurrent		0x15
+#define NF_COMMAND_SetDrivesMaxSpeed		0x16
+#define NF_COMMAND_SetDrivesMinPosition		0x17
+#define NF_COMMAND_SetDrivesMaxPosition		0x18
+#define NF_COMMAND_SetDrivesMaxAcceleration	0x19
+#define NF_COMMAND_SetDrivesMotionDuration	0x1D
 
 #define NF_COMMAND_ReadDrivesPosition	0x1A
 #define NF_COMMAND_ReadDrivesCurrent	0x1B
@@ -100,6 +102,7 @@ typedef struct{
 #define NF_DrivesMode_CURRENT		0x03
 #define NF_DrivesMode_POSITION		0x04
 #define NF_DrivesMode_PWM			0x05
+#define NF_DrivesMode_PVT			0x06
 #define NF_DrivesMode_SYNC_PWM0		0x10
 #define NF_DrivesMode_SYNC_CURRENT0 0x11
 #define NF_DrivesMode_SYNC_POS0		0x12
@@ -175,6 +178,24 @@ typedef struct{
 	uint8_t addr[NF_BUFSZ_SetDrivesMaxPosition];
 	uint8_t updated;
 } NF_STRUCT_SetDrivesMaxPosition;
+#endif
+// ####		Set Max Acceleration
+#ifdef NF_BUFSZ_SetDrivesMaxAcceleration
+typedef struct{
+	#define NF_DATABYTES_SetDrivesMaxAcceleration	4
+	int32_t data[NF_BUFSZ_SetDrivesMaxAcceleration];
+	uint8_t addr[NF_BUFSZ_SetDrivesMaxAcceleration];
+	uint8_t updated;
+} NF_STRUCT_SetDrivesMaxAcceleration;
+#endif
+// ####		Set Motion Duration
+#ifdef NF_BUFSZ_SetDrivesMotionDuration
+typedef struct{
+	#define NF_DATABYTES_SetDrivesMotionDuration	4
+	int32_t data[NF_BUFSZ_SetDrivesMotionDuration];
+	uint8_t addr[NF_BUFSZ_SetDrivesMotionDuration];
+	uint8_t updated;
+} NF_STRUCT_SetDrivesMotionDuration;
 #endif
 // ####		Read Position
 #ifdef NF_BUFSZ_ReadDrivesPosition
@@ -498,6 +519,14 @@ typedef struct{
 	// ####		Set Max Position
 	#ifdef NF_BUFSZ_SetDrivesMaxPosition
 		NF_STRUCT_SetDrivesMaxPosition	SetDrivesMaxPosition;
+	#endif
+	// ####		Set Max Acceleration
+	#ifdef NF_BUFSZ_SetDrivesMaxAcceleration
+		NF_STRUCT_SetDrivesMaxAcceleration	SetDrivesMaxAcceleration;
+	#endif
+	// ####		Set Motion Duration
+	#ifdef NF_BUFSZ_SetDrivesMotionDuration
+		NF_STRUCT_SetDrivesMotionDuration	SetDrivesMotionDuration;
 	#endif
 	// ####		Read Position
 	#ifdef NF_BUFSZ_ReadDrivesPosition
