@@ -155,8 +155,8 @@ typedef struct{
 // ####		Set Max Speed
 #ifdef NF_BUFSZ_SetDrivesMaxSpeed
 typedef struct{
-	#define NF_DATABYTES_SetDrivesMaxSpeed	2
-	int16_t data[NF_BUFSZ_SetDrivesMaxSpeed];
+	#define NF_DATABYTES_SetDrivesMaxSpeed	4
+	int32_t data[NF_BUFSZ_SetDrivesMaxSpeed];
 	uint8_t addr[NF_BUFSZ_SetDrivesMaxSpeed];
 	uint8_t updated;
 } NF_STRUCT_SetDrivesMaxSpeed;
