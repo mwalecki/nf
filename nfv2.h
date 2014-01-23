@@ -250,6 +250,7 @@ typedef struct{
 #define NF_DrivesStatus_SynchroSwitch		(1 << 2)
 #define NF_DrivesStatus_EncoderIndexSignal	(1 << 3)
 #define NF_DrivesStatus_Synchronized		(1 << 4)
+#define NF_DrivesStatus_PVTTrajAccomplished	(1 << 5)
 #define NF_DrivesStatus_PositionLimit		(1 << 10)
 #define NF_DrivesStatus_SpeedLimit			(1 << 11)
 #define NF_DrivesStatus_CurrentLimit		(1 << 12)
