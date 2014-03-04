@@ -218,8 +218,8 @@ typedef struct{
 // ####		Read Speed
 #ifdef NF_BUFSZ_ReadDrivesSpeed
 typedef struct{
-	#define NF_DATABYTES_ReadDrivesSpeed	2
-	int16_t data[NF_BUFSZ_ReadDrivesSpeed];
+	#define NF_DATABYTES_ReadDrivesSpeed	4
+	int32_t data[NF_BUFSZ_ReadDrivesSpeed];
 	uint8_t addr[NF_BUFSZ_ReadDrivesSpeed];
 	uint8_t updated;
 } NF_STRUCT_ReadDrivesSpeed;
