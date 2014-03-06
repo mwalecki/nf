@@ -98,11 +98,12 @@ typedef struct{
 // ##		Possible Values
 #define NF_DrivesMode_ERROR			0x00
 #define NF_DrivesMode_MANUAL		0x01
-#define NF_DrivesMode_SPEED			0x02
+#define NF_DrivesMode_SPEED			0x02	// SetDrivesSpeed achieved by direct velocity regulator
 #define NF_DrivesMode_CURRENT		0x03
 #define NF_DrivesMode_POSITION		0x04
 #define NF_DrivesMode_PWM			0x05
 #define NF_DrivesMode_PVT			0x06
+#define NF_DrivesMode_POS_INCREMENT	0x07	// SetDrivesSpeed achieved by position trajectory generator
 #define NF_DrivesMode_SYNC_PWM0		0x10
 #define NF_DrivesMode_SYNC_CURRENT0 0x11
 #define NF_DrivesMode_SYNC_POS0		0x12
