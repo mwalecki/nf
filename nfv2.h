@@ -253,6 +253,8 @@ typedef struct{
 #define NF_DrivesStatus_Synchronized		(1 << 4)
 #define NF_DrivesStatus_PVTTrajAccomplished	(1 << 5)
 #define NF_DrivesStatus_PVTTrajBufferEmpty	(1 << 6)
+#define NF_DrivesStatus_CommunicationFault	(1 << 7)
+#define NF_DrivesStatus_TrajectoryFollowErr	(1 << 8)
 #define NF_DrivesStatus_PowerStVoltageLow	(1 << 9)
 #define NF_DrivesStatus_PositionLimit		(1 << 10)
 #define NF_DrivesStatus_SpeedLimit			(1 << 11)
