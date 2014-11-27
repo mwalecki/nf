@@ -104,9 +104,7 @@ typedef struct{
 #define NF_DrivesMode_PWM			0x05
 #define NF_DrivesMode_PVT			0x06
 #define NF_DrivesMode_POS_INCREMENT	0x07	// SetDrivesSpeed achieved by position trajectory generator
-#define NF_DrivesMode_SYNC_PWM0		0x10
-#define NF_DrivesMode_SYNC_CURRENT0 0x11
-#define NF_DrivesMode_SYNC_POS0		0x12
+#define NF_DrivesMode_HOMING		0x12
 #endif
 // ####		Set Speed
 #ifdef NF_BUFSZ_SetDrivesSpeed
